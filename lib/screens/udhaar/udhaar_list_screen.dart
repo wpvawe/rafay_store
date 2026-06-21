@@ -60,7 +60,16 @@ class _UdhaarListScreenState extends State<UdhaarListScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _udhaarProv = context.read<UdhaarProvider>();
-      _udhaarProv!.addListener(_clearLoading);
+      // If provider already has data (started before screen opened), clear immediately
+      if (_udhaarProv!.totalCount > 0 || _udhaarProv!.error != null) {
+        setState(() => _loading = false);
+      } else {
+        _udhaarProv!.addListener(_clearLoading);
+        // 3-second fallback in case stream never fires a new event
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted && _loading) setState(() => _loading = false);
+        });
+      }
       _udhaarProv!.startListening();
     });
   }

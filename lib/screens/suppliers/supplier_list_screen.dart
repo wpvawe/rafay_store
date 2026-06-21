@@ -60,7 +60,16 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _supplierProv = context.read<SupplierProvider>();
-      _supplierProv!.addListener(_clearLoading);
+      // If provider already has data (started before screen opened), clear immediately
+      if (_supplierProv!.totalCount > 0 || _supplierProv!.error != null) {
+        setState(() => _loading = false);
+      } else {
+        _supplierProv!.addListener(_clearLoading);
+        // 3-second fallback in case stream never fires a new event
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted && _loading) setState(() => _loading = false);
+        });
+      }
       _supplierProv!.startListening();
     });
   }

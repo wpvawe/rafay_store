@@ -58,7 +58,16 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _customerProv = context.read<CustomerProvider>();
-      _customerProv!.addListener(_clearLoading);
+      // If provider already has data (started before screen opened), clear immediately
+      if (_customerProv!.totalCount > 0 || _customerProv!.error != null) {
+        setState(() => _loading = false);
+      } else {
+        _customerProv!.addListener(_clearLoading);
+        // 3-second fallback in case stream never fires a new event
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted && _loading) setState(() => _loading = false);
+        });
+      }
       _customerProv!.startListening();
     });
   }
