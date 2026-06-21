@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isApproved() {
+      return isSignedIn() && userDoc().status == 'approved';
+    }
+
+    function isAdmin() {
+      return isApproved() && userDoc().role == 'admin';
+    }
+
+    function canWrite() {
+      return isApproved() && (userDoc().role == 'admin' || userDoc().role == 'editor');
+    }
+
+    // ── Users collection ────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow read: if isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.role == 'viewer';
+
+      allow update: if isAdmin() && request.auth.uid != uid;
+
+      allow update: if isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['fcmToken']);
+
+      allow delete: if false;
+    }
+
+    // ── Demand Items collection ─────────────────────────────────────────────
+    match /demandItems/{itemId} {
+      allow read: if isApproved();
+      allow create: if canWrite();
+      allow update: if canWrite();
+      allow delete: if isAdmin();
+    }
+
+    // ── Suppliers collection ────────────────────────────────────────────────
+    match /suppliers/{supplierId} {
+      allow read: if isApproved();
+      allow create: if canWrite();
+      allow update: if canWrite();
+      allow delete: if isAdmin();
+    }
+
+    // ── Udhaar Khata collection ─────────────────────────────────────────────
+    match /udhaarEntries/{entryId} {
+      allow read: if isApproved();
+      allow create: if canWrite();
+      allow update: if canWrite();
+      allow delete: if isAdmin();
+    }
+
+    // ── Customers collection ────────────────────────────────────────────────
+    match /customers/{customerId} {
+      allow read: if isApproved();
+      allow create: if canWrite();
+      allow update: if canWrite();
+      allow delete: if isAdmin();
+    }
+
+    // ── Categories collection ───────────────────────────────────────────────
+    match /categories/{categoryId} {
+      allow read: if isApproved();
+      allow create: if canWrite();
+      allow update: if canWrite();
+      allow delete: if isAdmin();
+    }
+
+    // ── Deny everything else ────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

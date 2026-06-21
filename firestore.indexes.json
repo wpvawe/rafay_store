@@ -1,0 +1,21 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "demandItems",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "addedBy.at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "demandItems",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "categoryId", "order": "ASCENDING" },
+        { "fieldPath": "addedBy.at", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

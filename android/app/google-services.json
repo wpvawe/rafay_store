@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "761475352831",
+    "project_id": "rafay-store-3eefc",
+    "storage_bucket": "rafay-store-3eefc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761475352831:android:d1c111acc2ea3de007e4ca",
+        "android_client_info": {
+          "package_name": "com.rafaystore.rafay_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "761475352831-92n5q4e7ajogebnd9ck4e83gtvfsnt7p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rafaystore.rafay_store",
+            "certificate_hash": "f21a3cf1733273ad735423ab54157d3b6ddd83c8"
+          }
+        },
+        {
+          "client_id": "761475352831-mugl9t9hvsnhbf58vjvum277sgqndcrd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZOCFdG6NVchK6l5-DJO35lVG4tE7ZRYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "761475352831-mugl9t9hvsnhbf58vjvum277sgqndcrd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
